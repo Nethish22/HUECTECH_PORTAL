@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>HUECTECH | Dashboard</title>
+
+    <!-- SAME CSS AS LOGIN -->
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
+
+</head>
+
+
+<body class="dashboard-page">
+
+
+    <!-- MOBILE OVERLAY -->
+
+    <div
+        class="sidebar-overlay"
+        id="sidebarOverlay"
+    ></div>
+
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside class="sidebar">
+
+
+        <!-- BRAND -->
+
+        <div class="sidebar-brand">
+
+            <div class="sidebar-logo">
+                H
+            </div>
+
+
+            <div class="sidebar-brand-text">
+
+                <strong>
+                    HUECTECH
+                </strong>
+
+                <span>
+                    Employee Portal
+                </span>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- NAVIGATION -->
+
+        <nav class="nav-list">
+
+            <a
+                href="dashboard.html"
+                class="nav-link active"
+            >
+
+                <span class="nav-icon">
+                    ⌂
+                </span>
+
+                <span>
+                    Dashboard
+                </span>
+
+            </a>
+
+
+            <a
+                href="attendance.html"
+                class="nav-link"
+            >
+
+                <span class="nav-icon">
+                    ◷
+                </span>
+
+                <span>
+                    Attendance
+                </span>
+
+            </a>
+
+
+            <a
+                href="profile.html"
+                class="nav-link"
+            >
+
+                <span class="nav-icon">
+                    ◎
+                </span>
+
+                <span>
+                    My Profile
+                </span>
+
+            </a>
+
+        </nav>
+
+
+
+        <!-- SIDEBAR USER -->
+
+        <div class="sidebar-user">
+
+            <div
+                class="sidebar-avatar"
+                id="sidebarAvatar"
+            >
+                U
+            </div>
+
+
+            <div class="sidebar-user-details">
+
+                <strong id="sidebarName">
+                    Employee
+                </strong>
+
+                <span id="sidebarCode">
+                    —
+                </span>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- LOGOUT -->
+
+        <button
+            class="sidebar-logout"
+            onclick="logout()"
+        >
+
+            <span>
+                ↪
+            </span>
+
+            Logout
+
+        </button>
+
+    </aside>
+
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+    <main class="main-content">
+
+
+        <!-- TOPBAR -->
+
+        <header class="topbar">
+
+
+            <div class="topbar-left">
+
+                <button
+                    class="mobile-menu-button"
+                    id="mobileMenuButton"
+                    type="button"
+                >
+                    ☰
+                </button>
+
+
+                <div>
+
+                    <p class="page-label">
+                        EMPLOYEE PORTAL
+                    </p>
+
+                    <h1>
+                        Dashboard
+                    </h1>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- USER -->
+
+            <div class="topbar-user">
+
+                <div
+                    class="top-avatar"
+                    id="topAvatar"
+                >
+                    U
+                </div>
+
+
+                <div class="top-user-details">
+
+                    <strong id="topName">
+                        Employee
+                    </strong>
+
+                    <span id="topCode">
+                        —
+                    </span>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- =================================================
+             WELCOME
+        ================================================== -->
+
+        <section class="welcome-section">
+
+            <div>
+
+                <p class="page-label">
+                    HUECTECH WORKSPACE
+                </p>
+
+
+                <h2>
+                    Welcome back,
+                    <span id="welcomeName">
+                        Employee
+                    </span>
+                </h2>
+
+
+                <p>
+                    Manage your attendance, employee
+                    information and daily workplace activities
+                    from one place.
+                </p>
+
+            </div>
+
+
+            <div class="welcome-decoration">
+
+                <div class="welcome-circle">
+                    H
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             PROFILE SUMMARY
+        ================================================== -->
+
+        <section class="profile-summary card">
+
+
+            <div
+                class="profile-avatar-large"
+                id="dashboardAvatar"
+            >
+                U
+            </div>
+
+
+            <div class="profile-summary-info">
+
+                <p class="card-label">
+                    EMPLOYEE PROFILE
+                </p>
+
+
+                <h2 id="studentName">
+                    Employee
+                </h2>
+
+
+                <p id="studentEmail">
+                    —
+                </p>
+
+
+                <div class="profile-tags">
+
+                    <span>
+                        ID:
+                        <strong id="studentCode">
+                            —
+                        </strong>
+                    </span>
+
+
+                    <span>
+                        Department:
+                        <strong id="studentCourse">
+                            —
+                        </strong>
+                    </span>
+
+
+                    <span>
+                        Batch:
+                        <strong id="studentBatch">
+                            —
+                        </strong>
+                    </span>
+
+
+                    <span class="status-tag">
+
+                        <span class="status-dot"></span>
+
+                        <strong id="studentStatus">
+                            Active
+                        </strong>
+
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             TODAY ATTENDANCE
+        ================================================== -->
+
+        <section class="dashboard-grid">
+
+
+            <div class="card attendance-main">
+
+
+                <div class="card-header">
+
+                    <div>
+
+                        <p class="card-label">
+                            ATTENDANCE
+                        </p>
+
+                        <h2>
+                            Today's Attendance
+                        </h2>
+
+                    </div>
+
+
+                    <div class="attendance-date">
+                        Today
+                    </div>
+
+                </div>
+
+
+
+                <div class="attendance-time-grid">
+
+
+                    <!-- CHECK IN -->
+
+                    <div class="time-box">
+
+                        <div class="time-icon checkin">
+                            IN
+                        </div>
+
+
+                        <div>
+
+                            <span>
+                                CHECK IN
+                            </span>
+
+                            <strong id="checkInTime">
+                                --:--
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- CHECK OUT -->
+
+                    <div class="time-box">
+
+                        <div class="time-icon checkout">
+                            OUT
+                        </div>
+
+
+                        <div>
+
+                            <span>
+                                CHECK OUT
+                            </span>
+
+                            <strong id="checkOutTime">
+                                --:--
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- HOURS -->
+
+                    <div class="time-box">
+
+                        <div class="time-icon hours">
+                            HR
+                        </div>
+
+
+                        <div>
+
+                            <span>
+                                WORKING HOURS
+                            </span>
+
+                            <strong id="workingHours">
+                                —
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- BUTTONS -->
+
+                <div class="attendance-actions">
+
+                    <button
+                        id="checkInButton"
+                        class="primary-button"
+                        type="button"
+                        onclick="checkIn()"
+                    >
+                        ✓ Check In
+                    </button>
+
+
+                    <button
+                        id="checkOutButton"
+                        class="secondary-button"
+                        type="button"
+                        onclick="checkOut()"
+                    >
+                        ↪ Check Out
+                    </button>
+
+                </div>
+
+
+                <div
+                    id="attendanceMessage"
+                    class="attendance-message"
+                ></div>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 QUICK INFO
+            ================================================== -->
+
+            <div class="card quick-info-card">
+
+                <p class="card-label">
+                    WORKPLACE
+                </p>
+
+                <h2>
+                    Employee Information
+                </h2>
+
+
+                <div class="quick-info-list">
+
+
+                    <div>
+
+                        <span>
+                            Employee ID
+                        </span>
+
+                        <strong id="dashboardCode">
+                            —
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            Department / Course
+                        </span>
+
+                        <strong id="dashboardDepartment">
+                            —
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            Batch / Team
+                        </span>
+
+                        <strong id="dashboardBatch">
+                            —
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            Account
+                        </span>
+
+                        <strong
+                            class="active-text"
+                            id="dashboardStatus"
+                        >
+                            Active
+                        </strong>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             ATTENDANCE HISTORY
+        ================================================== -->
+
+        <section class="card history-card">
+
+
+            <div class="card-header">
+
+                <div>
+
+                    <p class="card-label">
+                        RECORDS
+                    </p>
+
+                    <h2>
+                        Attendance History
+                    </h2>
+
+                </div>
+
+
+                <a
+                    href="attendance.html"
+                    class="view-all-link"
+                >
+                    View All →
+                </a>
+
+            </div>
+
+
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                DATE
+                            </th>
+
+                            <th>
+                                CHECK IN
+                            </th>
+
+                            <th>
+                                CHECK OUT
+                            </th>
+
+                            <th>
+                                HOURS
+                            </th>
+
+                            <th>
+                                STATUS
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="attendanceHistory">
+
+                        <tr>
+
+                            <td
+                                colspan="5"
+                                class="loading-cell"
+                            >
+                                Loading attendance records...
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             COMPANY MODULES
+        ================================================== -->
+
+        <section class="dashboard-modules">
+
+
+            <a
+                href="attendance.html"
+                class="module-card"
+            >
+
+                <div class="module-icon">
+                    ◷
+                </div>
+
+                <div>
+
+                    <h3>
+                        Attendance
+                    </h3>
+
+                    <p>
+                        View your complete attendance
+                        history and daily records.
+                    </p>
+
+                </div>
+
+                <span>
+                    →
+                </span>
+
+            </a>
+
+
+
+            <a
+                href="profile.html"
+                class="module-card"
+            >
+
+                <div class="module-icon">
+                    ◎
+                </div>
+
+                <div>
+
+                    <h3>
+                        My Profile
+                    </h3>
+
+                    <p>
+                        View your employee information,
+                        department and account details.
+                    </p>
+
+                </div>
+
+                <span>
+                    →
+                </span>
+
+            </a>
+
+
+        </section>
+
+
+
+        <!-- FOOTER -->
+
+        <footer class="dashboard-footer">
+
+            <span>
+                © 2026 HUECTECH Info Technologies Pvt Ltd
+            </span>
+
+            <span>
+                Secure Employee Portal
+            </span>
+
+        </footer>
+
+
+    </main>
+
+
+    <!-- COMMON JS -->
+
+    <script src="js/app.js"></script>
+
+    <!-- DASHBOARD JS -->
+
+    <script src="js/dashboard.js"></script>
+
+
+</body>
+
+</html>
