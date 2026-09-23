@@ -1,93 +1,356 @@
 from database import get_connection
-from auth import hash_password
+import bcrypt
 
+
+# =========================================================
+# CREATE STUDENT
+# =========================================================
 
 def create_student():
-    print("===================================")
-    print("     HUECTECH - CREATE STUDENT")
-    print("===================================")
 
-    full_name = input("Enter student name: ")
-    email = input("Enter email: ")
-    course_name = input("Enter course name: ")
-    batch_name = input("Enter batch name: ")
-    password = input("Enter password: ")
+    print()
+    print("===================================")
+    print("       HUECTECH - CREATE STUDENT")
+    print("===================================")
+    print()
 
-    connection = get_connection()
-    cursor = connection.cursor()
+    # -----------------------------------------------------
+    # STUDENT DETAILS
+    # -----------------------------------------------------
+
+    student_code = input(
+        "Enter Student ID: "
+    ).strip()
+
+    full_name = input(
+        "Enter student name: "
+    ).strip()
+
+    email = input(
+        "Enter email: "
+    ).strip()
+
+    phone = input(
+        "Enter phone number: "
+    ).strip()
+
+    course_name = input(
+        "Enter course name: "
+    ).strip()
+
+    batch_name = input(
+        "Enter batch name: "
+    ).strip()
+
+    internship_start_date = input(
+        "Enter internship start date (YYYY-MM-DD): "
+    ).strip()
+
+    internship_end_date = input(
+        "Enter internship end date (YYYY-MM-DD): "
+    ).strip()
+
+    password = input(
+        "Enter password: "
+    ).strip()
+
+    # -----------------------------------------------------
+    # VALIDATION
+    # -----------------------------------------------------
+
+    if not student_code:
+        print("Student ID cannot be empty.")
+        return
+
+    if not full_name:
+        print("Student name cannot be empty.")
+        return
+
+    if not email:
+        print("Email cannot be empty.")
+        return
+
+    if not password:
+        print("Password cannot be empty.")
+        return
+
+    # -----------------------------------------------------
+    # PASSWORD HASH
+    # -----------------------------------------------------
+
+    password_hash = bcrypt.hashpw(
+        password.encode("utf-8"),
+        bcrypt.gensalt()
+    ).decode("utf-8")
+
+    connection = None
 
     try:
 
-        # Find latest StudentCode
-        cursor.execute("""
-            SELECT MAX(
-                CAST(RIGHT(StudentCode, 4) AS INT)
+        # -------------------------------------------------
+        # CONNECT TO SQL SERVER
+        # -------------------------------------------------
+
+        connection = get_connection()
+
+        cursor = connection.cursor()
+
+        # -------------------------------------------------
+        # CHECK DUPLICATE STUDENT ID
+        # -------------------------------------------------
+
+        cursor.execute(
+            """
+            SELECT StudentID
+            FROM dbo.Students
+            WHERE StudentCode = ?
+            """,
+            student_code
+        )
+
+        existing_student = cursor.fetchone()
+
+        if existing_student:
+
+            print()
+            print("===================================")
+            print("       STUDENT ID ALREADY EXISTS")
+            print("===================================")
+            print()
+
+            print(
+                "Student ID:",
+                student_code
             )
-            FROM Students
-            WHERE StudentCode LIKE 'HUEC2026%'
-        """)
 
-        result = cursor.fetchone()
+            return
 
-        last_number = result[0] if result[0] is not None else 0
+        # -------------------------------------------------
+        # CHECK DUPLICATE EMAIL
+        # -------------------------------------------------
 
-        next_number = last_number + 1
+        cursor.execute(
+            """
+            SELECT StudentID
+            FROM dbo.Students
+            WHERE Email = ?
+            """,
+            email
+        )
 
-        student_code = f"HUEC2026{next_number:04d}"
+        existing_email = cursor.fetchone()
 
-        # Hash password
-        password_hash = hash_password(password)
+        if existing_email:
 
-        # Insert student
-        cursor.execute("""
-            INSERT INTO Students
+            print()
+            print("===================================")
+            print("          EMAIL ALREADY EXISTS")
+            print("===================================")
+            print()
+
+            print(
+                "Email:",
+                email
+            )
+
+            return
+
+        # -------------------------------------------------
+        # INSERT STUDENT
+        # -------------------------------------------------
+
+        cursor.execute(
+            """
+            INSERT INTO dbo.Students
             (
                 StudentCode,
                 FullName,
                 Email,
+                Phone,
                 PasswordHash,
                 CourseName,
                 BatchName,
-                IsActive
+                InternshipStartDate,
+                InternshipEndDate,
+                IsActive,
+                CreatedAt
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-        """, (
+            VALUES
+            (
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                1,
+                GETDATE()
+            )
+            """,
+
             student_code,
+
             full_name,
+
             email,
+
+            phone if phone else None,
+
             password_hash,
-            course_name,
-            batch_name,
-            1
-        ))
+
+            course_name if course_name else None,
+
+            batch_name if batch_name else None,
+
+            internship_start_date
+            if internship_start_date
+            else None,
+
+            internship_end_date
+            if internship_end_date
+            else None
+        )
+
+        # -------------------------------------------------
+        # SAVE
+        # -------------------------------------------------
 
         connection.commit()
 
+        # -------------------------------------------------
+        # GET CREATED STUDENT
+        # -------------------------------------------------
+
+        cursor.execute(
+            """
+            SELECT
+                StudentID,
+                StudentCode,
+                FullName,
+                Email,
+                Phone,
+                CourseName,
+                BatchName,
+                InternshipStartDate,
+                InternshipEndDate,
+                IsActive,
+                CreatedAt,
+                PhotoURL
+            FROM dbo.Students
+            WHERE StudentCode = ?
+            """,
+            student_code
+        )
+
+        student = cursor.fetchone()
+
+        # -------------------------------------------------
+        # SUCCESS
+        # -------------------------------------------------
+
         print()
         print("===================================")
-        print("      STUDENT CREATED")
+        print("   STUDENT CREATED SUCCESSFULLY")
         print("===================================")
-        print(f"Student Code : {student_code}")
-        print(f"Name         : {full_name}")
-        print(f"Email        : {email}")
-        print(f"Course       : {course_name}")
-        print(f"Batch        : {batch_name}")
-        print(f"Password     : {password}")
-        print("===================================")
+        print()
 
-    except Exception as e:
+        print(
+            "Student ID        :",
+            student.StudentID
+        )
 
-        connection.rollback()
+        print(
+            "Student Code      :",
+            student.StudentCode
+        )
+
+        print(
+            "Name              :",
+            student.FullName
+        )
+
+        print(
+            "Email             :",
+            student.Email
+        )
+
+        print(
+            "Phone             :",
+            student.Phone
+        )
+
+        print(
+            "Course            :",
+            student.CourseName
+        )
+
+        print(
+            "Batch             :",
+            student.BatchName
+        )
+
+        print(
+            "Internship Start  :",
+            student.InternshipStartDate
+        )
+
+        print(
+            "Internship End    :",
+            student.InternshipEndDate
+        )
+
+        print(
+            "Active            :",
+            student.IsActive
+        )
+
+        print(
+            "Created At        :",
+            student.CreatedAt
+        )
 
         print()
-        print("ERROR:")
-        print(e)
+
+        print(
+            "Student has been stored in SQL Server."
+        )
+
+        print()
+
+    except Exception as error:
+
+        # -------------------------------------------------
+        # ERROR
+        # -------------------------------------------------
+
+        if connection:
+
+            connection.rollback()
+
+        print()
+        print("===================================")
+        print("       ERROR CREATING STUDENT")
+        print("===================================")
+        print()
+
+        print(error)
+
+        print()
 
     finally:
 
-        cursor.close()
-        connection.close()
+        if connection:
 
+            connection.close()
+
+
+# =========================================================
+# RUN PROGRAM
+# =========================================================
 
 if __name__ == "__main__":
+
     create_student()
