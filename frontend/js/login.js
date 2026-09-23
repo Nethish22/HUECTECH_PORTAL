@@ -8,10 +8,6 @@ document.addEventListener(
         const loginButton =
             document.getElementById("loginButton");
 
-        const message =
-            document.getElementById("message");
-
-
         if (!loginForm) {
             return;
         }
@@ -24,11 +20,11 @@ document.addEventListener(
         const existingStudent =
             getLoggedInStudent();
 
-
         if (existingStudent) {
 
-            window.location.href =
-                "dashboard.html";
+            window.location.replace(
+                "dashboard.html"
+            );
 
             return;
         }
@@ -45,17 +41,24 @@ document.addEventListener(
                 event.preventDefault();
 
 
+                const studentCodeElement =
+                    document.getElementById(
+                        "studentCode"
+                    );
+
+                const passwordElement =
+                    document.getElementById(
+                        "password"
+                    );
+
+
                 const studentCode =
-                    document
-                        .getElementById("studentCode")
+                    studentCodeElement
                         .value
                         .trim();
 
-
                 const password =
-                    document
-                        .getElementById("password")
-                        .value;
+                    passwordElement.value;
 
 
                 if (!studentCode) {
@@ -80,18 +83,21 @@ document.addEventListener(
                 }
 
 
-                /* BUTTON LOADING */
-
                 loginButton.disabled = true;
 
                 loginButton.textContent =
                     "Signing in...";
 
-
                 hideLoginMessage();
 
 
                 try {
+
+                    console.log(
+                        "LOGIN API:",
+                        `${API_URL}/login`
+                    );
+
 
                     const response =
                         await fetch(
@@ -99,9 +105,14 @@ document.addEventListener(
                             {
                                 method: "POST",
 
+                                cache: "no-store",
+
                                 headers: {
                                     "Content-Type":
-                                        "application/json"
+                                        "application/json",
+
+                                    "Cache-Control":
+                                        "no-cache"
                                 },
 
                                 body: JSON.stringify({
@@ -130,32 +141,12 @@ document.addEventListener(
                     }
 
 
-                    /* =========================================
-                       LOGIN FAILED
-                    ========================================== */
-
                     if (!response.ok) {
 
                         throw new Error(
                             data.detail ||
                             data.message ||
                             "Invalid Employee ID or password."
-                        );
-                    }
-
-
-                    /* =========================================
-                       LOGIN SUCCESS
-                    ========================================== */
-
-                    if (
-                        !data.success &&
-                        !data.student
-                    ) {
-
-                        throw new Error(
-                            data.message ||
-                            "Login failed."
                         );
                     }
 
@@ -169,19 +160,28 @@ document.addEventListener(
                     if (!student) {
 
                         throw new Error(
-                            "Login successful, but employee information was not returned by the server."
+                            "Login successful, but employee information was not returned."
                         );
                     }
 
 
-                    /* SAVE USER */
+                    /*
+                     * Remove old employee session
+                     */
+
+                    localStorage.removeItem(
+                        "student"
+                    );
+
+
+                    /*
+                     * Save newly authenticated employee
+                     */
 
                     saveLoggedInStudent(
                         student
                     );
 
-
-                    /* SUCCESS MESSAGE */
 
                     showLoginMessage(
                         "Login successful. Opening your portal...",
@@ -189,16 +189,15 @@ document.addEventListener(
                     );
 
 
-                    /* REDIRECT */
-
                     setTimeout(
                         function () {
 
-                            window.location.href =
-                                "dashboard.html";
+                            window.location.replace(
+                                "dashboard.html"
+                            );
 
                         },
-                        500
+                        300
                     );
 
 
@@ -228,7 +227,7 @@ document.addEventListener(
         );
 
     }
-);
+});
 
 
 /* =========================================================
@@ -245,19 +244,15 @@ function showLoginMessage(
             "message"
         );
 
-
     if (!element) {
         return;
     }
 
-
     element.textContent =
         message;
 
-
     element.className =
         "form-message " + type;
-
 
     element.style.display =
         "block";
@@ -275,19 +270,15 @@ function hideLoginMessage() {
             "message"
         );
 
-
     if (!element) {
         return;
     }
 
-
     element.textContent =
         "";
 
-
     element.className =
         "form-message";
-
 
     element.style.display =
         "none";
